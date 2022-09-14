@@ -7,16 +7,17 @@ import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 // sections
 import {
-  AppTasks,
-  AppNewsUpdate,
-  AppOrderTimeline,
+  // AppTasks,
+  // AppNewsUpdate,
+  // AppOrderTimeline,
   AppCurrentVisits,
   AppWebsiteVisits,
-  AppTrafficBySite,
+  // AppTrafficBySite,
   AppWidgetSummary,
-  AppCurrentSubject,
-  AppConversionRates,
+  // AppCurrentSubject,
+  // AppConversionRates,
 } from '../sections/@dashboard/app';
+import OrderTrackingTable from "../sections/@dashboard/app/OrderTrackingTable";
 
 // ----------------------------------------------------------------------
 
@@ -47,7 +48,7 @@ export default function DashboardApp() {
             <AppWidgetSummary title="Bug Reports" total={234} color="error" icon={'ant-design:bug-filled'} />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
+          <Grid item xs={12} md={6} lg={7}>
             <AppWebsiteVisits
               title="Website Visits"
               subheader="(+43%) than last year"
@@ -87,7 +88,7 @@ export default function DashboardApp() {
             />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={6} lg={5}>
             <AppCurrentVisits
               title="Current Visits"
               chartData={[
@@ -105,8 +106,8 @@ export default function DashboardApp() {
             />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
-            <AppConversionRates
+          <Grid item xs={12} md={6} lg={7}>
+            {/* <AppConversionRates
               title="Conversion Rates"
               subheader="(+43%) than last year"
               chartData={[
@@ -121,11 +122,12 @@ export default function DashboardApp() {
                 { label: 'United States', value: 1200 },
                 { label: 'United Kingdom', value: 1380 },
               ]}
-            />
+            /> */}
+            <OrderTrackingTable />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentSubject
+          <Grid item xs={12} md={6} lg={5}>
+            {/* <AppCurrentSubject
               title="Current Subject"
               chartLabels={['English', 'History', 'Physics', 'Geography', 'Chinese', 'Math']}
               chartData={[
@@ -134,11 +136,11 @@ export default function DashboardApp() {
                 { name: 'Series 3', data: [44, 76, 78, 13, 43, 10] },
               ]}
               chartColors={[...Array(6)].map(() => theme.palette.text.secondary)}
-            />
+            /> */}
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
-            <AppNewsUpdate
+            {/* <AppNewsUpdate
               title="News Update"
               list={[...Array(5)].map((_, index) => ({
                 id: faker.datatype.uuid(),
@@ -147,11 +149,11 @@ export default function DashboardApp() {
                 image: `/static/mock-images/covers/cover_${index + 1}.jpg`,
                 postedAt: faker.date.recent(),
               }))}
-            />
+            /> */}
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
-            <AppOrderTimeline
+            {/* <AppOrderTimeline
               title="Order Timeline"
               list={[...Array(5)].map((_, index) => ({
                 id: faker.datatype.uuid(),
@@ -165,11 +167,11 @@ export default function DashboardApp() {
                 type: `order${index + 1}`,
                 time: faker.date.past(),
               }))}
-            />
+            /> */}
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
-            <AppTrafficBySite
+            {/* <AppTrafficBySite
               title="Traffic by Site"
               list={[
                 {
@@ -193,11 +195,11 @@ export default function DashboardApp() {
                   icon: <Iconify icon={'eva:twitter-fill'} color="#1C9CEA" width={32} height={32} />,
                 },
               ]}
-            />
+            /> */}
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
-            <AppTasks
+            {/* <AppTasks
               title="Tasks"
               list={[
                 { id: '1', label: 'Create FireStone Logo' },
@@ -206,7 +208,7 @@ export default function DashboardApp() {
                 { id: '4', label: 'Scoping & Estimations' },
                 { id: '5', label: 'Sprint Showcase' },
               ]}
-            />
+            /> */}
           </Grid>
         </Grid>
       </Container>
