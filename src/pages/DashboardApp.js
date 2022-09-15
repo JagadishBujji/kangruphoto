@@ -28,7 +28,7 @@ export default function DashboardApp() {
     <Page title="Dashboard">
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Hi, Welcome back to Kangru photography
+          Hi, Kangru Photography
         </Typography>
 
         <Grid container spacing={3}>
@@ -50,7 +50,7 @@ export default function DashboardApp() {
 
           <Grid item xs={12} md={6} lg={7}>
             <AppWebsiteVisits
-              title="Website Visits"
+              title="Revenue Details"
               subheader="(+43%) than last year"
               chartLabels={[
                 '01/01/2003',
@@ -90,7 +90,7 @@ export default function DashboardApp() {
 
           <Grid item xs={12} md={6} lg={5}>
             <AppCurrentVisits
-              title="Current Visits"
+              title="Revenue"
               chartData={[
                 { label: 'America', value: 4344 },
                 { label: 'Asia', value: 5435 },

@@ -16,11 +16,11 @@ const navConfig = [
     path: '/dashboard/user',
     icon: getIcon('eva:people-fill'),
   },
-  // {
-  //   title: 'product',
-  //   path: '/dashboard/products',
-  //   icon: getIcon('eva:shopping-bag-fill'),
-  // },
+  {
+    title: 'Profile',
+    path: '/dashboard/profile',
+    icon: getIcon('healthicons:ui-user-profile'),
+  },
   // {
   //   title: 'blog',
   //   path: '/dashboard/blog',
