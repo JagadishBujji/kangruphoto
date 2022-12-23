@@ -2,7 +2,7 @@ import { Grid, Card, Container, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import UploadedImage from './UploadedImage';
 
-const TeamHirer = () => {
+const FreeBee = () => {
   const navigate = useNavigate();
   return (
     <>
@@ -15,7 +15,7 @@ const TeamHirer = () => {
             }}
             className="back"
           >
-            Team Hire <i className="fas fa-chevron-right" /> <span className="team-heading"> Team Details</span>
+            FreeBee <i className="fas fa-chevron-right" /> <span className="team-heading"> Team Details</span>
           </Typography>
         </Stack>
         <Grid container spacing={3}>
@@ -57,12 +57,12 @@ const TeamHirer = () => {
                 </p>
                 <p>20</p>
               </div>
-              <div className="team-hirer">
+              {/* <div className="team-hirer">
                 <p>
                   <b>No of Checkout </b>{' '}
                 </p>
                 <p>5</p>
-              </div>
+              </div> */}
               <div className="team-hirer">
                 <p>
                   <b>Event Type </b>{' '}
@@ -97,4 +97,4 @@ const TeamHirer = () => {
   );
 };
 
-export default TeamHirer;
+export default FreeBee;
