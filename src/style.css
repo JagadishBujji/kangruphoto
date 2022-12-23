@@ -1,0 +1,57 @@
+.css-13pv91e-MuiButtonBase-root-MuiTab-root.Mui-selected {
+  color: #fff;
+}
+
+.css-13xfq8m-MuiTabPanel-root {
+  padding: 15px;
+}
+
+.css-6d3pg0-MuiTabs-indicator {
+  background: none;
+}
+
+.css-i73l8x-MuiButtonBase-root-MuiListItemButton-root {
+  background: linear-gradient(90deg, rgba(171, 26, 253, 1) 14%, rgba(73, 26, 255, 1) 68%);
+  color: #fff;
+  transition: 1s;
+}
+
+.css-mpr9kc-MuiPaper-root-MuiDrawer-paper {
+  width: 170px;
+}
+
+.css-1y6sui9 {
+  width: 160px;
+}
+
+.css-a083jv-MuiPaper-root-MuiAppBar-root {
+  width: calc(100% - 170px);
+}
+
+.img-upload {
+  margin: 5px;
+  border-radius: 10px;
+}
+
+.uploaded {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  /* overflow: auto; */
+}
+
+.css-1byr0tz {
+  padding: 100px 40px;
+}
+
+.details {
+  display: flex;
+  /* align-items: center; */
+  flex-direction: row;
+}
+
+.details-para {
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}

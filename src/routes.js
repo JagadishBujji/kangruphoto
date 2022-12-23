@@ -10,6 +10,7 @@ import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
+import TeamHirer from './Reuseable/TeamHirer';
 
 // ----------------------------------------------------------------------
 
@@ -23,6 +24,7 @@ export default function Router() {
         { path: 'user', element: <User /> },
         { path: 'profile', element: <Products /> },
         { path: 'blog', element: <Blog /> },
+        { path: 'hirer/:id', element: <TeamHirer/> },
       ],
     },
     {

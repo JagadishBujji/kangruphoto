@@ -1,7 +1,7 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 // material
 import {
   Card,
@@ -32,12 +32,12 @@ import USERLIST from '../../../_mock/user';
 
 const TABLE_HEAD = [
   { id: 'dateandtime', label: 'Date and Time', alignRight: false },
-  { id: 'name', label: 'Team Hirer Name ', alignRight: false },
+  { id: 'name', label: ' Name ', alignRight: false },
   { id: 'company', label: 'Event Type', alignRight: false },
   { id: 'role', label: 'Gears List', alignRight: false },
   { id: 'location', label: 'Location', alignRight: false },
-  { id: 'status', label: 'No of Application', alignRight: false },
-  { id: 'checkout', label: 'No of Checkout', alignRight: false },
+  { id: 'status', label: 'No of recruiter', alignRight: false },
+
   { id: 'isVerified', label: 'Event Status', alignRight: false },
   { id: 'isVerified', label: 'Payment Status', alignRight: false },
   { id: 'eventprice', label: 'Event Price', alignRight: false },
@@ -74,7 +74,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function OrderTrackingTable() {
+export default function FreeBeeTable() {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -135,14 +135,13 @@ export default function OrderTrackingTable() {
   const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
-  const navigate = useNavigate();
 
   return (
     <Page title="User">
       <Card sx={{ padding: '20px' }}>
         {/* <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} /> */}
         <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
-          Team Hirer
+          FreeBee
         </Typography>
         <Scrollbar sx={{ padding: '20px' }}>
           <TableContainer sx={{ minWidth: 1800 }}>
@@ -169,7 +168,6 @@ export default function OrderTrackingTable() {
                       role="checkbox"
                       selected={isItemSelected}
                       aria-checked={isItemSelected}
-                      onClick={() => navigate(`/dashboard/hirer/:id`)}
                     >
                       {/* <TableCell padding="checkbox">
                         <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
@@ -186,21 +184,11 @@ export default function OrderTrackingTable() {
                           </Typography>
                         </Stack>
                       </TableCell>
-                      <TableCell sx={{ color: 'gray' }} align="left">
-                        {company}
-                      </TableCell>
-                      <TableCell sx={{ color: 'gray' }} align="left">
-                        {role}
-                      </TableCell>
-                      <TableCell sx={{ color: 'gray' }} align="left">
-                        chennai
-                      </TableCell>
-                      <TableCell sx={{ color: 'gray' }} align="left">
-                        {isVerified ? 'Yes' : 'No'}
-                      </TableCell>
-                      <TableCell sx={{ color: 'gray' }} align="left">
-                        {isVerified ? 'Yes' : 'No'}
-                      </TableCell>
+                      <TableCell sx={{ color: 'gray' }} align="left">{company}</TableCell>
+                      <TableCell sx={{ color: 'gray' }} align="left">{role}</TableCell>
+                      <TableCell sx={{ color: 'gray' }} align="left">chennai</TableCell>
+                      <TableCell sx={{ color: 'gray' }} align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
+                      {/* <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell> */}
 
                       <TableCell sx={{ color: 'gray' }} align="left">
                         <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
@@ -212,9 +200,9 @@ export default function OrderTrackingTable() {
                           {sentenceCase(status)}
                         </Label>
                       </TableCell>
-                      <TableCell sx={{ color: 'gray' }} align="left">
-                        2000/-
-                      </TableCell>
+                      
+                      <TableCell sx={{ color: 'gray' }} align="left">2000/-</TableCell>
+                      {/* <TableCell align="left">2000/-</TableCell> */}
                       <TableCell sx={{ color: 'gray' }} align="right">
                         <UserMoreMenu />
                       </TableCell>
