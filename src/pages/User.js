@@ -1,7 +1,8 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { collection, getDocs } from 'firebase/firestore';
 // material
 import {
   Card,
@@ -24,6 +25,8 @@ import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
+import {db} from '../Firebase/fbconfig'
+
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
@@ -131,7 +134,28 @@ export default function User() {
   const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
-
+  
+  const [users,setUsers]=useState();
+ 
+  useEffect(()=>{
+    const getData=async()=>{
+      const querySnapshot = await getDocs(collection(db, "UserDetails"));
+      const arr=[]
+      querySnapshot.forEach((doc) => {
+        const data=doc.data()
+        // doc.data() is never undefined for query doc snapshots
+        // console.log(doc.id, " => ", doc.data());
+        const obj={
+          doc_id:doc.id,
+          ...data
+        }
+        arr.push(obj)
+      });
+      setUsers(arr);
+    }
+    getData()
+  },[])
+  console.log(users)
   return (
     <Page title="User">
       <Container>

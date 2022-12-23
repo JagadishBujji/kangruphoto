@@ -1,7 +1,8 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useState,useEffect } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom'; 
+import { collection, getDocs } from "firebase/firestore";
 // material
 import {
   Card,
@@ -26,7 +27,9 @@ import Iconify from '../../../components/Iconify';
 import SearchNotFound from '../../../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../user';
 // mock
-import USERLIST from '../../../_mock/user';
+import USERLIST from '../../../_mock/user'; 
+import { db } from '../../../Firebase/fbconfig'
+
 
 // ----------------------------------------------------------------------
 
@@ -136,6 +139,18 @@ export default function OrderTrackingTable() {
 
   const isUserNotFound = filteredUsers.length === 0;
   const navigate = useNavigate();
+
+  // useEffect(()=>{
+  //   const getData=async()=>{
+  //     const querySnapshot = await getDocs(collection(db, "UserDetails"));
+  //     querySnapshot.forEach((doc) => {
+  //       // doc.data() is never undefined for query doc snapshots
+  //       console.log(doc.id, " => ", doc.data());
+  //     });
+  //   }
+  //   getData()
+  // },[])
+// 
 
   return (
     <Page title="User">
