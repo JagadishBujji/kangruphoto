@@ -11,6 +11,7 @@ import Register from './pages/Register';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
 import TeamHirer from './Reuseable/TeamHirer';
+import FreeBee from './Reuseable/FreeBee';
 
 // ----------------------------------------------------------------------
 
@@ -24,7 +25,8 @@ export default function Router() {
         { path: 'user', element: <User /> },
         { path: 'profile', element: <Products /> },
         { path: 'blog', element: <Blog /> },
-        { path: 'hirer/:id', element: <TeamHirer/> },
+        { path: 'hirer/:id', element: <TeamHirer /> },
+        { path: 'freebee/:id', element: <FreeBee /> },
       ],
     },
     {

@@ -31,6 +31,7 @@
 .img-upload {
   margin: 5px;
   border-radius: 10px;
+  cursor: pointer;
 }
 
 .uploaded {
@@ -54,4 +55,18 @@
   padding: 10px;
   margin-bottom: 10px;
   font-size: 14px;
+}
+
+.img-focus {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* .team-heading {
+  font-size: 18px;
+} */
+
+.fa-chevron-right,
+.back {
+  cursor: pointer;
 }

@@ -1,7 +1,7 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import {
   Card,
@@ -136,6 +136,8 @@ export default function FreeBeeTable() {
 
   const isUserNotFound = filteredUsers.length === 0;
 
+  const navigate = useNavigate();
+
   return (
     <Page title="User">
       <Card sx={{ padding: '20px' }}>
@@ -168,6 +170,7 @@ export default function FreeBeeTable() {
                       role="checkbox"
                       selected={isItemSelected}
                       aria-checked={isItemSelected}
+                      onClick={() => navigate(`/dashboard/freebee/:id`)}
                     >
                       {/* <TableCell padding="checkbox">
                         <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
