@@ -1,7 +1,7 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState,useEffect } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom'; 
+import { useState, useEffect } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { collection, getDocs } from "firebase/firestore";
 // material
 import {
@@ -27,23 +27,29 @@ import Iconify from '../../../components/Iconify';
 import SearchNotFound from '../../../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../user';
 // mock
-import USERLIST from '../../../_mock/user'; 
+import USERLIST from '../../../_mock/user';
 import { db } from '../../../Firebase/fbconfig'
 
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'dateandtime', label: 'Date and Time', alignRight: false },
   { id: 'name', label: 'Team Hirer Name ', alignRight: false },
   { id: 'company', label: 'Event Type', alignRight: false },
-  { id: 'role', label: 'Gears List', alignRight: false },
-  { id: 'location', label: 'Location', alignRight: false },
-  { id: 'status', label: 'No of Application', alignRight: false },
-  { id: 'checkout', label: 'No of Checkout', alignRight: false },
-  { id: 'isVerified', label: 'Event Status', alignRight: false },
-  { id: 'isVerified', label: 'Payment Status', alignRight: false },
+  { id: 'camera gear', label: 'Camera gear List', alignRight: false },
+  { id: 'video_gear', label: 'video_gear', alignRight: false },
+  { id: 'description', label: 'Description', alignRight: false },
+  { id: 'posted_on', label: 'Posted on', alignRight: false },
+  { id: 'dateandtime', label: 'Start Date and Time', alignRight: false },
+  { id: 'end_date', label: 'End date and time', alignRight: false },
+  { id: 'event_location', label: 'Event location', alignRight: false },
+  { id: 'event_status', label: 'Event status', alignRight: false },
+  { id: 'experience', label: 'Experience', alignRight: false },
+  { id: 'invitation_url', label: 'Invitation Link', alignRight: false },
   { id: 'eventprice', label: 'Event Price', alignRight: false },
+  { id: 'section', label: 'Section', alignRight: false },
+  { id: 'services', label: 'Services', alignRight: false },
+
 ];
 
 // ----------------------------------------------------------------------
@@ -140,17 +146,30 @@ export default function OrderTrackingTable() {
   const isUserNotFound = filteredUsers.length === 0;
   const navigate = useNavigate();
 
-  // useEffect(()=>{
-  //   const getData=async()=>{
-  //     const querySnapshot = await getDocs(collection(db, "UserDetails"));
-  //     querySnapshot.forEach((doc) => {
-  //       // doc.data() is never undefined for query doc snapshots
-  //       console.log(doc.id, " => ", doc.data());
-  //     });
-  //   }
-  //   getData()
-  // },[])
-// 
+  const [count, setCount] = useState(0)
+  const [teamHire, setTeamHire] = useState();
+  const [displayData, setDisplayData] = useState();
+
+  useEffect(() => {
+    const getData = async () => {
+      const querySnapshot = await getDocs(collection(db, "team_hire_post"));
+      const arr = []
+      querySnapshot.forEach((doc) => {
+        const data = doc.data()
+        // doc.data() is never undefined for query doc snapshots
+        // console.log(doc.id, " => ", doc.data());
+        const obj = {
+          doc_id: doc.id,
+          ...data
+        }
+        arr.push(obj)
+      });
+      setTeamHire(arr);
+      setDisplayData(arr)
+    }
+    getData()
+  }, [count])
+  console.log(teamHire)
 
   return (
     <Page title="User">
@@ -172,42 +191,93 @@ export default function OrderTrackingTable() {
                 onSelectAllClick={handleSelectAllClick}
               />
               <TableBody>
-                {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                  const { id, name, role, status, company, avatarUrl, isVerified } = row;
-                  const isItemSelected = selected.indexOf(name) !== -1;
+                {displayData && displayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                  // const { id, name, role, status, company, avatarUrl, isVerified } = row;
+                  const isItemSelected = selected.indexOf(row.title) !== -1;
 
                   return (
                     <TableRow
                       hover
-                      key={id}
+                      key={row.doc_id}
                       tabIndex={-1}
                       role="checkbox"
                       selected={isItemSelected}
                       aria-checked={isItemSelected}
-                      onClick={() => navigate(`/dashboard/hirer/:id`)}
+                      onClick={() => navigate(`/dashboard/hirer/${row.doc_id}`)}
                     >
                       {/* <TableCell padding="checkbox">
                         <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
                       </TableCell> */}
-                      <TableCell sx={{ color: 'gray' }} align="left" padding="checkbox">
-                        20/12/2022 21:46
-                      </TableCell>
+                   
 
                       <TableCell sx={{ color: 'gray' }} component="th" scope="row" padding="none">
                         <Stack direction="row" alignItems="center" spacing={2}>
-                          <Avatar alt={name} src={avatarUrl} />
+                          {/* <Avatar alt={name} src={avatarUrl} /> */}
                           <Typography variant="subtitle2" noWrap>
-                            {name}
+                            {row.title}
                           </Typography>
                         </Stack>
                       </TableCell>
                       <TableCell sx={{ color: 'gray' }} align="left">
-                        {company}
+                        {row.event_type ? row.event_type : ""}
                       </TableCell>
                       <TableCell sx={{ color: 'gray' }} align="left">
-                        {role}
+                        {row.camera_gear ? row.camera_gear.map((gs, index) => {
+                          return `
+                          [${index + 1}] ${gs.Name} Rs-${gs.Price}   
+                        `
+
+                        }) : ""}
                       </TableCell>
                       <TableCell sx={{ color: 'gray' }} align="left">
+                        {row.video_gear ? row.video_gear.map((gs, index) => {
+                          return `
+                          [${index + 1}] ${gs.Name} Rs-${gs.Price}   
+                        `
+
+                        }) : ""}
+                      </TableCell>
+
+                      <TableCell sx={{ color: 'gray' }} align="left">
+                        {row.description ? row.description : ""}
+                      </TableCell>
+                      <TableCell sx={{ color: 'gray' }} align="left" padding="checkbox">
+                        {row.posted_on_date ? row.posted_on_date : ""}  
+                      </TableCell>
+                      <TableCell sx={{ color: 'gray' }} align="left" padding="checkbox">
+                        {row.start_date ? row.start_date : ""} {row.start_time ? row.start_time : ""}
+                      </TableCell>
+                      <TableCell sx={{ color: 'gray' }} align="left">
+                      {row.end_date ? row.end_date : ""} {row.end_time ? row.end_time : ""}
+                      </TableCell>
+                      <TableCell sx={{ color: 'gray' }} align="left">
+                        {row.event_loc_link ? row.event_loc_link : ""}
+                      </TableCell>
+                      <TableCell sx={{ color: 'gray' }} align="left">
+                        {/* {row.event_status ? row.event_status : ""} */}
+                        <Label variant="ghost" color={(row === 'banned' && 'error') || 'success'}>
+                          {sentenceCase(row?.event_status)}
+                        </Label>
+                      </TableCell>
+                      <TableCell sx={{ color: 'gray' }} align="left">
+                        {row.experience ? row.experience : ""}
+                      </TableCell>
+                      <TableCell onClick={e => e.stopPropagation()} sx={{ color: 'gray' }} align="left">
+                        {row.invitation_url.length>0 ?
+                        <a href={row.invitation_url} target="_blank" rel='noreferrer'> Link </a>
+                        : "No link provided"}
+                      </TableCell>
+                      <TableCell sx={{ color: 'gray' }} align="left">
+                        {row.price ? row.price : ""}
+                      </TableCell>
+                      <TableCell sx={{ color: 'gray' }} align="left">
+                        {row.section ? row.section : ""}
+                      </TableCell>
+                      <TableCell sx={{ color: 'gray' }} align="left">
+                        {row.service ?
+                        row.service : ""}
+                      </TableCell>
+                      {/*  <TableCell sx={{ color: 'gray' }} align="left">
                         chennai
                       </TableCell>
                       <TableCell sx={{ color: 'gray' }} align="left">
@@ -229,9 +299,9 @@ export default function OrderTrackingTable() {
                       </TableCell>
                       <TableCell sx={{ color: 'gray' }} align="left">
                         2000/-
-                      </TableCell>
-                      <TableCell sx={{ color: 'gray' }} align="right">
-                        <UserMoreMenu />
+                      </TableCell> */}
+                      <TableCell onClick={(e)=>e.stopPropagation()} sx={{ color: 'gray' }} align="right">
+                        <UserMoreMenu count={count} setCount={setCount} collection="team_hire_post" id={row.doc_id} />
                       </TableCell>
                     </TableRow>
                   );

@@ -34,11 +34,31 @@ import USERLIST from '../_mock/user';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+  { id: 'sno', label: '', alignRight: false },
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'email', label: 'Email', alignRight: false },
+  { id: 'address', label: 'Address', alignRight: false },
+  { id: 'gender', label: 'Gender', alignRight: false },
+  { id: 'phone_number', label: 'Phone number', alignRight: false },
+  { id: 'alternative_no', label: 'Alternative number', alignRight: false },
+  { id: 'aadhar_card', label: 'Aadhar', alignRight: false },
+  { id: 'blood_group', label: 'Blood group', alignRight: false },
+  { id: 'district', label: 'District', alignRight: false },
+  { id: 'education', label: 'Education', alignRight: false },
+  { id: 'experience', label: 'Experience', alignRight: false },
+  { id: 'landline_no', label: 'Landline number', alignRight: false },
+  { id: 'language', label: 'Language', alignRight: false },
+  { id: 'location', label: 'Location', alignRight: false },
+  { id: 'owner_name', label: 'Owner Name', alignRight: false },
+  { id: 'pan_card', label: 'Pan card', alignRight: false },
+  { id: 'specialist', label: 'Specialist', alignRight: false },
+  { id: 'studio_location', label: 'Studio Location', alignRight: false },
+  { id: 'studio_name', label: 'Studio Name', alignRight: false },
+  { id: 'studio_services', label: 'Studio services', alignRight: false }, 
+  { id: 'total_labours', label: 'Total labours', alignRight: false }, 
+
+
+  
   { id: '' },
 ];
 
@@ -85,8 +105,23 @@ export default function User() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
+  const [oBy,setOBy]=useState(true)
   const handleRequestSort = (event, property) => {
+    console.log(property)
+    setOBy(!oBy)
+    if(property==='name')
+    {
+      if(oBy)
+      { 
+        const sortedObjs = users.sort((a, b) => a.username.toLowerCase() > b.username.toLowerCase() ? 1 : -1);
+        console.log(sortedObjs)
+      }
+      else{
+        const sortedObjs = users.sort((a, b) => a.username.toLowerCase() < b.username.toLowerCase() ? 1 : -1);
+        console.log(sortedObjs)
+      }
+    }
+
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -134,9 +169,10 @@ export default function User() {
   const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
-  
+  const [count,setCount]=useState(0)
   const [users,setUsers]=useState();
- 
+  const [displayData,setDisplayData]=useState();
+  // console.log(selected)
   useEffect(()=>{
     const getData=async()=>{
       const querySnapshot = await getDocs(collection(db, "UserDetails"));
@@ -152,9 +188,10 @@ export default function User() {
         arr.push(obj)
       });
       setUsers(arr);
+      setDisplayData(arr)
     }
     getData()
-  },[])
+  },[count])
   console.log(users)
   return (
     <Page title="User">
@@ -169,8 +206,7 @@ export default function User() {
         </Stack>
 
         <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
-
+          <UserListToolbar users={users} setUsers={setDisplayData}  setSelected={setSelected} setCount={setCount} count={count} selected={selected} numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
@@ -184,41 +220,61 @@ export default function User() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, status, company, avatarUrl, isVerified } = row;
-                    const isItemSelected = selected.indexOf(name) !== -1;
+          {displayData?.length===0 &&  <p> No data available </p>}
+
+                  {displayData?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    const {   username } = row;
+                    const isItemSelected = selected.indexOf(row.doc_id) !== -1;
 
                     return (
                       <TableRow
                         hover
-                        key={id}
+                        key={row.doc_id}
                         tabIndex={-1}
                         role="checkbox"
                         selected={isItemSelected}
                         aria-checked={isItemSelected}
                       >
                         <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
+                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row.doc_id)} />
                         </TableCell>
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={avatarUrl} />
+                            <Avatar alt={username} src={row.profile_pic?row.profile_pic:""} />
                             <Typography variant="subtitle2" noWrap>
-                              {name}
+                              {username}
                             </Typography>
                           </Stack>
                         </TableCell>
-                        <TableCell align="left">{company}</TableCell>
-                        <TableCell align="left">{role}</TableCell>
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-                        <TableCell align="left">
+                        <TableCell align="left">{row.email?row.email:""}</TableCell>
+                        <TableCell align="left">{row.address?row.address:""}</TableCell>
+                        <TableCell align="left">{row.gender?row.gender:""}</TableCell>
+                        <TableCell align="left">{row.phone_number?row.phone_number:""}</TableCell>
+                        <TableCell align="left">{row.alternative_no?row.alternative_no:""}</TableCell>
+                        <TableCell align="left">{row.aadhar_card?row.aadhar_card:""}</TableCell>
+                        <TableCell align="left">{row.blood_group?row.blood_group:""}</TableCell>
+                        <TableCell align="left">{row.district?row.district:""}</TableCell>
+                        <TableCell align="left">{row.education?row.education:""}</TableCell>
+                        <TableCell align="left">{row.experience?row.experience:""}</TableCell>
+                        <TableCell align="left">{row.landline_no?row.landline_no:""}</TableCell>
+                        <TableCell align="left">{row.language?row.language:""}</TableCell>
+                        <TableCell align="left">{row.location?`${row.location._lat},${row.location._long}`:""}</TableCell>
+                        <TableCell align="left">{row.owner_name?row.owner_name:""}</TableCell>
+                        <TableCell align="left">{row.pan_card?row.pan_card:""}</TableCell>
+                        <TableCell align="left">{row.specialist?row.specialist:""}</TableCell>
+                        <TableCell align="left">{row.studio_location?row.studio_location:""}</TableCell>
+                        <TableCell align="left">{row.studio_name?row.studio_name:""}</TableCell>
+                        <TableCell align="left">{row.studio_services?row.studio_services:""}</TableCell>
+                        <TableCell align="left">{row.total_labours?row.total_labours:""}</TableCell>
+                         
+                        {/* <TableCell align="left">
                           <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
                             {sentenceCase(status)}
                           </Label>
-                        </TableCell>
+                        </TableCell> */}
 
                         <TableCell align="right">
-                          <UserMoreMenu />
+                          <UserMoreMenu count={count} setCount={setCount} collection="UserDetails" id={row.doc_id} />
                         </TableCell>
                       </TableRow>
                     );

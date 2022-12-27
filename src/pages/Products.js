@@ -2,12 +2,14 @@ import { useState } from 'react';
 // material
 import { Container, Box, Button, Stack, Typography, Card, Grid, TextField } from '@mui/material';
 // components
+import { doc, setDoc } from 'firebase/firestore';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Page from '../components/Page';
 
 import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../sections/@dashboard/products';
 // mock
+import {db} from '../Firebase/fbconfig'
 import PRODUCTS from '../_mock/products';
 
 // ----------------------------------------------------------------------
@@ -29,6 +31,41 @@ export default function EcommerceShop() {
     textAlign: 'center',
     color: theme.palette.text.secondary,
   }));
+
+  const user=JSON.parse(localStorage.getItem("kangroo"));
+  const [formData,setFormData]=useState({
+    email:user.email,
+    password:user.password,
+    firstName:user.firstName,
+    lastName:user.lastName
+  })
+  const [isPending,setIsPending]=useState(false)
+  const id=user.doc_id
+  const handleSubmit=()=>{
+    if(formData.firstName && formData.lastName)
+    {  
+      const cityRef = doc(db, 'admins', id);
+      setIsPending(true);
+      const fm={
+        ...formData,
+        doc_id:id
+      }
+      setDoc(cityRef,fm )
+      .then((res)=>{
+        localStorage.setItem("kangroo",JSON.stringify(fm));
+        alert("updated") 
+        window.location.reload();
+      }).catch((err)=>{
+        alert(err)
+        console.log(err);
+      }).finally(()=>{
+      setIsPending(false); 
+      })
+    }
+    else{
+      alert("enter all values")
+    }
+  }
 
   return (
     <Page title="Dashboard: Products">
@@ -56,10 +93,10 @@ export default function EcommerceShop() {
                 style={{ borderRadius: '50%', margin: 'auto' }}
               />
               <Typography variant="h6" sx={{ mt: 2 }}>
-                Jagadish Kumar
+                {formData.firstName} {formData.lastName}
               </Typography>
               <Typography variant="h6" sx={{ mt: 2 }}>
-                Jagadish00198@gmail.com
+                {formData.email}
               </Typography>
             </Grid>
             <Grid item xs={8}>
@@ -73,12 +110,13 @@ export default function EcommerceShop() {
                         id="outlined-basic"
                         label="First Name"
                         required
-                        // value={formData.companyName}
+
+                        value={formData.firstName}
                         variant="outlined"
                         sx={{ marginRight: '10px', marginBottom: '15px' }}
-                        // onChange={(e) => {
-                        //   setFormData({ ...formData, companyName: e.target.value });
-                        // }}
+                        onChange={(e) => {
+                          setFormData({ ...formData, firstName: e.target.value });
+                        }}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -87,12 +125,12 @@ export default function EcommerceShop() {
                         id="outlined-basic"
                         label="Last Name"
                         required
-                        // value={formData.companyName}
+                        value={formData.lastName}
                         variant="outlined"
                         sx={{ marginRight: '10px', marginBottom: '15px' }}
-                        // onChange={(e) => {
-                        //   setFormData({ ...formData, companyName: e.target.value });
-                        // }}
+                        onChange={(e) => {
+                          setFormData({ ...formData, lastName: e.target.value });
+                        }}
                       />
                     </Grid>
                   </Grid>{' '}
@@ -106,7 +144,8 @@ export default function EcommerceShop() {
                         id="outlined-basic"
                         type="email"
                         required
-                        // value={formData.email}
+                        disabled
+                        value={formData.email}
                         // onChange={(e)=>{
                         //   setFormData({...formData,email:e.target.value})
                         // }}
@@ -118,7 +157,7 @@ export default function EcommerceShop() {
                 </Box>
                 <Box>
                   <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                    <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                       <TextField
                         fullWidth
                         type="number"
@@ -131,23 +170,8 @@ export default function EcommerceShop() {
                         variant="outlined"
                         sx={{ marginRight: '10px', marginBottom: '15px' }}
                       />
-                    </Grid>
-                    {/* <Grid item xs={6}>
-                    <TextField
-                      fullWidth
-                      label="email"
-                      id="outlined-basic"
-                      type="email"
-                      disabled
-                      required
-                      value={formData.email}
-                      onChange={(e) => {
-                        setFormData({ ...formData, email: e.target.value });
-                      }}
-                      variant="outlined"
-                      sx={{ marginRight: '10px', marginBottom: '15px' }}
-                    />
-                  </Grid> */}
+                    </Grid> */}
+                   
                   </Grid>{' '}
                 </Box>
                 <Box>
@@ -179,7 +203,7 @@ export default function EcommerceShop() {
                 <Button variant="outline" sx={{ marginRight: '10px', border: '1px solid #EEB5EB', color: '#EEB5EB' }}>
                   cancel
                 </Button>
-                <Button type="submit" variant="contained" className="publish">
+                <Button type="submit" disabled={isPending} onClick={handleSubmit} variant="contained" className="publish">
                   save
                 </Button>
               </Box>

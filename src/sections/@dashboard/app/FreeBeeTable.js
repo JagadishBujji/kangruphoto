@@ -1,6 +1,6 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import { useState ,useEffect} from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import {
@@ -18,6 +18,8 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
+import { collection, getDocs } from 'firebase/firestore';
+import {db} from '../../../Firebase/fbconfig'
 // components
 import Page from '../../../components/Page';
 import Label from '../../../components/Label';
@@ -30,17 +32,26 @@ import USERLIST from '../../../_mock/user';
 
 // ----------------------------------------------------------------------
 
-const TABLE_HEAD = [
-  { id: 'dateandtime', label: 'Date and Time', alignRight: false },
-  { id: 'name', label: ' Name ', alignRight: false },
-  { id: 'company', label: 'Event Type', alignRight: false },
-  { id: 'role', label: 'Gears List', alignRight: false },
-  { id: 'location', label: 'Location', alignRight: false },
-  { id: 'status', label: 'No of recruiter', alignRight: false },
+// const TABLE_HEAD = [
+//   { id: 'dateandtime', label: 'Date and Time', alignRight: false },
+//   { id: 'name', label: ' Name ', alignRight: false },
+//   { id: 'company', label: 'Event Type', alignRight: false },
+//   { id: 'role', label: 'Gears List', alignRight: false },
+//   { id: 'location', label: 'Location', alignRight: false },
+//   { id: 'status', label: 'No of recruiter', alignRight: false },
 
-  { id: 'isVerified', label: 'Event Status', alignRight: false },
-  { id: 'isVerified', label: 'Payment Status', alignRight: false },
-  { id: 'eventprice', label: 'Event Price', alignRight: false },
+//   { id: 'isVerified', label: 'Event Status', alignRight: false },
+//   { id: 'isVerified', label: 'Payment Status', alignRight: false },
+//   { id: 'eventprice', label: 'Event Price', alignRight: false },
+// ];
+const TABLE_HEAD = [
+  { id: 'title', label: 'Title', alignRight: false }, 
+  { id: 'service', label: 'Service', alignRight: false }, 
+  { id: 'experience', label: 'Experience', alignRight: false },  
+  { id: 'video_gear', label: 'Video gear', alignRight: false }, 
+  { id: 'description', label: 'Description', alignRight: false }, 
+  { id: 'price', label: 'Price', alignRight: false }, 
+  { id: 'section', label: 'section', alignRight: false } 
 ];
 
 // ----------------------------------------------------------------------
@@ -138,6 +149,31 @@ export default function FreeBeeTable() {
 
   const navigate = useNavigate();
 
+  const [count, setCount] = useState(0)
+  const [freeBee, setFreeBee] = useState();
+  const [displayData, setDisplayData] = useState();
+
+  useEffect(() => {
+    const getData = async () => {
+      const querySnapshot = await getDocs(collection(db, "freebie_post"));
+      const arr = []
+      querySnapshot.forEach((doc) => {
+        const data = doc.data()
+        // doc.data() is never undefined for query doc snapshots
+        // console.log(doc.id, " => ", doc.data());
+        const obj = {
+          doc_id: doc.id,
+          ...data
+        }
+        arr.push(obj)
+      });
+      setFreeBee(arr);
+      setDisplayData(arr)
+    }
+    getData()
+  }, [count])
+  console.log(freeBee)
+
   return (
     <Page title="User">
       <Card sx={{ padding: '20px' }}>
@@ -158,42 +194,47 @@ export default function FreeBeeTable() {
                 onSelectAllClick={handleSelectAllClick}
               />
               <TableBody>
-                {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                  const { id, name, role, status, company, avatarUrl, isVerified } = row;
-                  const isItemSelected = selected.indexOf(name) !== -1;
+                {displayData?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                  // const { id, name, role, status, company, avatarUrl, isVerified } = row;
+                  const isItemSelected = selected.indexOf(row.title) !== -1;
 
                   return (
                     <TableRow
                       hover
-                      key={id}
+                      key={row.doc_id}
                       tabIndex={-1}
                       role="checkbox"
                       selected={isItemSelected}
                       aria-checked={isItemSelected}
-                      onClick={() => navigate(`/dashboard/freebee/:id`)}
+                      onClick={() => navigate(`/dashboard/freebee/${row.doc_id}`)}
                     >
                       {/* <TableCell padding="checkbox">
                         <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
                       </TableCell> */}
                       <TableCell sx={{ color: 'gray' }} align="left" padding="checkbox">
-                        20/12/2022 21:46
+                      {row.title?row.title:""}
+                         
                       </TableCell>
 
                       <TableCell sx={{ color: 'gray' }} component="th" scope="row" padding="none">
                         <Stack direction="row" alignItems="center" spacing={2}>
-                          <Avatar alt={name} src={avatarUrl} />
+                          {/* <Avatar alt={name} src={avatarUrl} /> */}
                           <Typography variant="subtitle2" noWrap>
-                            {name}
+                            {row.service?row.service.map((fs)=>`${fs} `):""}
                           </Typography>
                         </Stack>
                       </TableCell>
-                      <TableCell sx={{ color: 'gray' }} align="left">{company}</TableCell>
-                      <TableCell sx={{ color: 'gray' }} align="left">{role}</TableCell>
-                      <TableCell sx={{ color: 'gray' }} align="left">chennai</TableCell>
-                      <TableCell sx={{ color: 'gray' }} align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-                      {/* <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell> */}
+                     <TableCell sx={{ color: 'gray' }} align="left">{row.experience?row.experience:""}</TableCell>
+                      <TableCell sx={{ color: 'gray' }} align="left"> 
+                      {row.video_gear ? row.video_gear.map((gs, index) => (
+                         <li> {gs} </li>
+                )) : ""}
+                      </TableCell>
+                      <TableCell sx={{ color: 'gray' }} align="left">{row.description?row.description:""}</TableCell> 
+                      <TableCell sx={{ color: 'gray' }} align="left">{row?.price}</TableCell> 
+                      <TableCell sx={{ color: 'gray' }} align="left">{row?.section}</TableCell> 
 
-                      <TableCell sx={{ color: 'gray' }} align="left">
+                      {/* <TableCell sx={{ color: 'gray' }} align="left">
                         <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
                           {sentenceCase(status)}
                         </Label>
@@ -202,12 +243,10 @@ export default function FreeBeeTable() {
                         <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
                           {sentenceCase(status)}
                         </Label>
-                      </TableCell>
-                      
-                      <TableCell sx={{ color: 'gray' }} align="left">2000/-</TableCell>
-                      {/* <TableCell align="left">2000/-</TableCell> */}
-                      <TableCell sx={{ color: 'gray' }} align="right">
-                        <UserMoreMenu />
+                      </TableCell> */}
+                        
+                      <TableCell onClick={(e)=>e.stopPropagation()} sx={{ color: 'gray' }} align="right">
+                        <UserMoreMenu collection="freebie_post"  id={row.doc_id}/>
                       </TableCell>
                     </TableRow>
                   );

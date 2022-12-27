@@ -8,8 +8,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Link, Stack, IconButton, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
+import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
+import { db } from '../../../Firebase/fbconfig'
 
 // ----------------------------------------------------------------------
 
@@ -39,8 +41,37 @@ export default function LoginForm() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async () => {
-    navigate('/dashboard', { replace: true });
+  const [isPending, setIsPending] = useState(false);
+
+  const onSubmit = async (e) => {
+    console.log(e.email)
+    const email = e.email
+    setIsPending(true);
+    const q = query(collection(db, "admins"), where("email", "==", email));
+
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.size > 0) {
+      querySnapshot.forEach((doc) => {
+        const dt = doc.data()
+        // doc.data() is never undefined for query doc snapshots
+        if (e.password === dt.password) {  
+          localStorage.setItem("kangroo", JSON.stringify(dt))
+          window.location.reload();
+          setIsPending(false);
+
+        }
+        else {
+          alert("wrong password")
+          setIsPending(false);
+
+        }
+      })
+    }
+    else {
+      alert("no user found")
+      setIsPending(false);
+
+    }
   };
 
   return (
@@ -71,7 +102,7 @@ export default function LoginForm() {
         </Link>
       </Stack>
 
-      <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+      <LoadingButton fullWidth size="large" disabled={isPending} type="submit" variant="contained" loading={isSubmitting}>
         Login
       </LoadingButton>
     </FormProvider>

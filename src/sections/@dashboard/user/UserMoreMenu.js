@@ -1,16 +1,39 @@
 import { useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { deleteDoc, doc } from 'firebase/firestore';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
-
+import {db} from '../../../Firebase/fbconfig'
 // ----------------------------------------------------------------------
 
-export default function UserMoreMenu() {
+export default function UserMoreMenu({data , count , setCount , collection, id}) {
   const ref = useRef(null);
+  const [isPending,setIsPending]=useState(false)
   const [isOpen, setIsOpen] = useState(false);
+  const handleClick=async()=>{
+   if(window.confirm("Are you sure want to delete"))
+   {
+    
+    setIsPending(true)
+    await deleteDoc(doc(db, collection,id))
+    .then(()=>{
+      setCount(count+1)
+      alert("Deleted")
+      setIsOpen(false)
+    }).catch((err)=>{
+      alert(err)
+      setIsOpen(false);
+    }).finally(()=>{
+    setIsPending(true) 
+    })
+  }
+  else{
+    setIsOpen(false);
+  }
 
+  }
   return (
     <>
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
@@ -27,8 +50,8 @@ export default function UserMoreMenu() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem sx={{ color: 'text.secondary' }}>
-          <ListItemIcon>
+        <MenuItem disabled={isPending} onClick={handleClick}  sx={{ color: 'text.secondary' }}>
+          <ListItemIcon >
             <Iconify icon="eva:trash-2-outline" width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />

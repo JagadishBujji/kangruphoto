@@ -16,10 +16,12 @@ import FreeBee from './Reuseable/FreeBee';
 // ----------------------------------------------------------------------
 
 export default function Router() {
+  const kangroo=JSON.parse(localStorage.getItem("kangroo"))
+  console.log(kangroo)
   return useRoutes([
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element:kangroo? <DashboardLayout /> :<Navigate to="/login"/>,
       children: [
         { path: 'app', element: <DashboardApp /> },
         { path: 'user', element: <User /> },
@@ -31,11 +33,11 @@ export default function Router() {
     },
     {
       path: 'login',
-      element: <Login />,
+      element:kangroo? <Navigate to="/dashboard/app"/ >: <Login />,
     },
     {
       path: 'register',
-      element: <Register />,
+      element:kangroo?  <Navigate to="/dashboard/app"/ >: <Register />,
     },
     {
       path: '/',

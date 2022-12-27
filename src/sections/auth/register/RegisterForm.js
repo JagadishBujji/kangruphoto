@@ -8,8 +8,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Stack, IconButton, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
+import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
+import { db } from '../../../Firebase/fbconfig'
 
 // ----------------------------------------------------------------------
 
@@ -41,9 +43,37 @@ export default function RegisterForm() {
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
+  const [isPending,setIsPending]=useState();
+  const onSubmit = async (e) => {
+    // navigate('/dashboard', { replace: true });
+    const id = crypto.randomUUID();
+    console.log(id, e);
+    setIsPending(true); 
+    const q = query(collection(db, "admins"), where("email", "==", e.email));
 
-  const onSubmit = async () => {
-    navigate('/dashboard', { replace: true });
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.size > 0) {
+       alert("user already registered kindly login")
+       setIsPending(false);
+    }
+    else { 
+      const cityRef = doc(db, 'admins', id);
+      setDoc(cityRef,{
+        ...e,
+        doc_id:id
+      } )
+      .then((res)=>{
+        alert("User registered kindly login")
+        navigate("/login")
+      }).catch((err)=>{
+        alert(err)
+        console.log(err);
+      }).finally(()=>{
+      setIsPending(false); 
+      })
+    }
+
+    
   };
 
   return (
@@ -71,7 +101,7 @@ export default function RegisterForm() {
           }}
         />
 
-        <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+        <LoadingButton disabled={isPending} fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
           Register
         </LoadingButton>
       </Stack>

@@ -1,8 +1,11 @@
+import { useState } from "react";
+import { doc, deleteDoc } from "firebase/firestore";
 import PropTypes from 'prop-types';
 // material
 import { styled } from '@mui/material/styles';
 import { Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment } from '@mui/material';
 // component
+import { db } from "../../../Firebase/fbconfig"
 import Iconify from '../../../components/Iconify';
 
 // ----------------------------------------------------------------------
@@ -35,7 +38,50 @@ UserListToolbar.propTypes = {
   onFilterName: PropTypes.func,
 };
 
-export default function UserListToolbar({ numSelected, filterName, onFilterName }) {
+export default function UserListToolbar({users,setUsers, setSelected, selected, setCount, count, numSelected, filterName, onFilterName }) {
+  const [search,setSearch]=useState()
+  const originalData=users
+  // console.log(originalData)
+  const [isPending,setIsPending]=useState(false)
+  const handleClick = () => {
+    // console.log(selected)
+    if(window.confirm("Are you sure want to delete"))
+    {
+    const len = selected.length;
+    let cc = 0
+    selected.forEach(async (fs) => {
+      setIsPending(true)
+      await deleteDoc(doc(db, "UserDetails", fs))
+        .then(() => {
+          cc += 1;
+          // console.log(cc);
+          if (cc === len) {
+            setCount(count + 1)
+            alert("Deleted")
+            setSelected([])
+            setIsPending(false);
+          }
+        }).catch((err) => {
+          console.log(err);
+          alert(err);
+        })
+    })
+  } 
+
+  }
+  const handleChange=(e)=>{
+    // console.log(e);
+     
+      
+    const filtered=originalData?.filter((us)=>{
+      const name=us.username;
+      
+      return name.includes(e)
+    })
+    // console.log(filtered)
+    setUsers(filtered)
+   
+  }
   return (
     <RootStyle
       sx={{
@@ -51,8 +97,11 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
         </Typography>
       ) : (
         <SearchStyle
-          value={filterName}
-          onChange={onFilterName}
+          // value={filterName}
+          value={search}
+          onChange={(e)=>{ 
+            handleChange(e.target.value);
+          }}
           placeholder="Search user..."
           startAdornment={
             <InputAdornment position="start">
@@ -64,7 +113,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton disabled={isPending} onClick={handleClick}>
             <Iconify icon="eva:trash-2-fill" />
           </IconButton>
         </Tooltip>

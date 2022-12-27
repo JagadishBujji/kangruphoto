@@ -1,9 +1,29 @@
 import { Grid, Card, Container, Stack, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import {db} from '../Firebase/fbconfig'
 import UploadedImage from './UploadedImage';
 
 const TeamHirer = () => {
   const navigate = useNavigate();
+  const id=useParams().id
+  console.log(id)
+  const [data,setData]=useState();
+  useEffect(()=>{
+    const getData=async()=>{
+      const docRef = doc(db, "team_hire_post", id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setData(docSnap.data())
+      } else {
+        // doc.data() will be undefined in this case
+        alert("No such document!");
+      }
+    }
+    getData()
+  },[])
+  console.log(data)
   return (
     <>
       <Stack>
@@ -23,63 +43,95 @@ const TeamHirer = () => {
             <Card sx={{ p: 2 }}>
               <div className="team-hirer">
                 <p>
-                  <b>Date and Time </b>{' '}
+                  <b>Start Date and Time </b>{' '}
                 </p>
-                <p>21/01/2022 21:22</p>
+                <p>{data?.start_date} {data?.start_time}</p>
+              </div>
+              <div className="team-hirer">
+                <p>
+                  <b>End Date and Time </b>{' '}
+                </p>
+                <p>{data?.end_date} {data?.end_time}</p>
               </div>
               <div className="team-hirer">
                 <p>
                   <b>Team Hirer Name</b>{' '}
                 </p>
-                <p>Jagadish Kumar</p>
+                <p>{data?.title}</p>
               </div>
               <div className="team-hirer">
                 <p>
                   <b>Event Type </b>{' '}
                 </p>
-                <p>Birthday Function</p>
+                <p>{data?.event_type}</p>
               </div>
               <div className="team-hirer">
                 <p>
-                  <b>Gears List </b>{' '}
+                  <b>Posted on </b>{' '}
                 </p>
-                <p>Nikon</p>
+                <p>{data?.posted_on_date}</p>
+              </div>
+              <div className="team-hirer">
+                <p>
+                  <b>Description </b>{' '}
+                </p>
+                <p>{data?.description}</p>
+              </div>
+             {data?.camera_gear && <div className="team-hirer">
+                <p>
+                  <b>Camera Gears List </b>{' '}
+                </p>
+                <p>{data?.camera_gear ? data?.camera_gear.map((gs, index) => 
+                <ul>
+                {gs.Name} Rs-{gs.Price}  
+                </ul> 
+                        )  : ""}</p>
+              </div>}
+              <div className="team-hirer">
+                <p>
+                  <b>Video Gears List </b>{' '}
+                </p>
+                <p>{data?.video_gear ? data?.video_gear.map((gs, index) => 
+                <ul>
+                {gs.Name} Rs-{gs.Price}  
+                </ul> 
+                        )  : ""}</p>
               </div>
               <div className="team-hirer">
                 <p>
                   <b>Location </b>{' '}
                 </p>
-                <p>Chennai</p>
+                <p>{data?.event_loc_link}</p>
               </div>
               <div className="team-hirer">
                 <p>
-                  <b>No of Application </b>{' '}
+                  <b>Event status </b>{' '}
                 </p>
-                <p>20</p>
+                <p>{data?.event_status}</p>
               </div>
               <div className="team-hirer">
                 <p>
-                  <b>No of Checkout </b>{' '}
+                  <b>Experience </b>{' '}
                 </p>
-                <p>5</p>
+                <p>{data?.experience}</p>
               </div>
               <div className="team-hirer">
                 <p>
-                  <b>Event Type </b>{' '}
+                  <b> Price </b>{' '}
                 </p>
-                <p>Open</p>
+                <p>{data?.price}</p>
               </div>
               <div className="team-hirer">
                 <p>
-                  <b>Payment Status </b>{' '}
+                  <b>Section </b>{' '}
                 </p>
-                <p>Paid</p>
+                <p>{data?.section}</p>
               </div>
               <div className="team-hirer">
                 <p>
-                  <b>Event Price </b>{' '}
+                  <b>Service </b>{' '}
                 </p>
-                <p>30,000</p>
+                <p>{data?.service  }</p>
               </div>
             </Card>
           </Grid>
@@ -88,7 +140,8 @@ const TeamHirer = () => {
               <p>
                 <b>Uplaoded Item</b>
               </p>
-              <UploadedImage />
+              {data?.invitation_url &&
+              <UploadedImage url={data.invitation_url}/>}
             </Card>
           </Grid>
         </Grid>

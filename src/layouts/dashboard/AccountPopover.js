@@ -42,6 +42,13 @@ export default function AccountPopover() {
   const handleClose = () => {
     setOpen(null);
   };
+  const user=JSON.parse(localStorage.getItem("kangroo"))
+  const handleLogout=()=>{
+    localStorage.removeItem("kangroo")
+    window.location.reload()
+    setOpen(null);
+
+  }
 
   return (
     <>
@@ -82,10 +89,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {user.firstName} {user.lastName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {user.email}
           </Typography>
         </Box>
 
@@ -101,7 +108,7 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
+        <MenuItem onClick={handleLogout} sx={{ m: 1 }}>
           Logout
         </MenuItem>
       </MenuPopover>

@@ -1,9 +1,29 @@
 import { Grid, Card, Container, Stack, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { useState,useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import UploadedImage from './UploadedImage';
+import {db} from '../Firebase/fbconfig'
 
 const FreeBee = () => {
   const navigate = useNavigate();
+  const id=useParams().id
+  console.log(id)
+  const [data,setData]=useState();
+  useEffect(()=>{
+    const getData=async()=>{
+      const docRef = doc(db, "freebie_post", id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setData(docSnap.data())
+      } else {
+        // doc.data() will be undefined in this case
+        alert("No such document!");
+      }
+    }
+    getData()
+  },[])
+  console.log(data)
   return (
     <>
       <Stack>
@@ -23,39 +43,41 @@ const FreeBee = () => {
             <Card sx={{ p: 2 }}>
               <div className="team-hirer">
                 <p>
-                  <b>Date and Time </b>{' '}
+                  <b>Title </b>{' '}
                 </p>
-                <p>21/01/2022 21:22</p>
+                <p>{data?.title?data.title:""}</p>
               </div>
               <div className="team-hirer">
                 <p>
-                  <b>Team Hirer Name</b>{' '}
+                  <b>Description</b>{' '}
                 </p>
-                <p>Jagadish Kumar</p>
+                <p>{data?.description?data.description:""}</p>
               </div>
               <div className="team-hirer">
                 <p>
-                  <b>Event Type </b>{' '}
+                  <b>Event type</b>{' '}
                 </p>
-                <p>Birthday Function</p>
+                <p>{data?.event_type?data.event_type.map((ms)=>`${ms} `):""}</p>
               </div>
               <div className="team-hirer">
                 <p>
-                  <b>Gears List </b>{' '}
+                  <b>Experience </b>{' '}
                 </p>
-                <p>Nikon</p>
+                <p>{data?.experience?data.experience:""}</p>
               </div>
               <div className="team-hirer">
                 <p>
-                  <b>Location </b>{' '}
+                  <b>Price </b>{' '}
                 </p>
-                <p>Chennai</p>
+                <p>{data?.price?data.price:"Not mentioned"}</p>
+
               </div>
               <div className="team-hirer">
                 <p>
-                  <b>No of Application </b>{' '}
+                  <b>Service </b>{' '}
                 </p>
-                <p>20</p>
+                <p>{data?.service?data.service.map((ms)=>`${ms} `):"Not mentioned"}</p>
+
               </div>
               {/* <div className="team-hirer">
                 <p>
@@ -65,9 +87,13 @@ const FreeBee = () => {
               </div> */}
               <div className="team-hirer">
                 <p>
-                  <b>Event Type </b>{' '}
+                  <b>Video gear </b>{' '}
                 </p>
-                <p>Open</p>
+                <p>{data?.video_gear ? data?.video_gear.map((gs, index) => 
+                <ul>
+                {gs}  
+                </ul> 
+                        )  : ""}</p>
               </div>
               <div className="team-hirer">
                 <p>
@@ -83,14 +109,14 @@ const FreeBee = () => {
               </div>
             </Card>
           </Grid>
-          <Grid item xs={12} sm={6} md={6}>
+          {/* <Grid item xs={12} sm={6} md={6}>
             <Card sx={{ p: 2 }}>
               <p>
                 <b>Uplaoded Item</b>
               </p>
               <UploadedImage />
             </Card>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Stack>
     </>
