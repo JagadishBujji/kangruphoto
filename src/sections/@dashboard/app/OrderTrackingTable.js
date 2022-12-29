@@ -2,7 +2,7 @@ import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query,orderBy as oB } from "firebase/firestore";
 // material
 import {
   Card,
@@ -152,7 +152,7 @@ export default function OrderTrackingTable() {
 
   useEffect(() => {
     const getData = async () => {
-      const querySnapshot = await getDocs(collection(db, "team_hire_post"));
+      const querySnapshot = await getDocs(query(collection(db, "team_hire_post"),oB("posted_on","desc")));
       const arr = []
       querySnapshot.forEach((doc) => {
         const data = doc.data()
@@ -264,7 +264,7 @@ export default function OrderTrackingTable() {
                       </TableCell>
                       <TableCell onClick={e => e.stopPropagation()} sx={{ color: 'gray' }} align="left">
                         {row.invitation_url.length>0 ?
-                        <a href={row.invitation_url} target="_blank" rel='noreferrer'> Link </a>
+                        <a href={row.invitation_url[0]} target="_blank" rel='noreferrer'> Link </a>
                         : "No link provided"}
                       </TableCell>
                       <TableCell sx={{ color: 'gray' }} align="left">

@@ -18,7 +18,7 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy as oB} from 'firebase/firestore';
 import {db} from '../../../Firebase/fbconfig'
 // components
 import Page from '../../../components/Page';
@@ -155,7 +155,7 @@ export default function FreeBeeTable() {
 
   useEffect(() => {
     const getData = async () => {
-      const querySnapshot = await getDocs(collection(db, "freebie_post"));
+      const querySnapshot = await getDocs(query(collection(db, "freebie_post"),oB("posted_on","desc")));
       const arr = []
       querySnapshot.forEach((doc) => {
         const data = doc.data()

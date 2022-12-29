@@ -72,6 +72,11 @@ export default function UserListToolbar({users,setUsers, setSelected, selected, 
   const handleChange=(e)=>{
     // console.log(e);
      
+    if(e.length===0)
+    {
+      setUsers(users)
+    }
+    else{
       
     const filtered=originalData?.filter((us)=>{
       const name=us.username;
@@ -80,6 +85,7 @@ export default function UserListToolbar({users,setUsers, setSelected, selected, 
     })
     // console.log(filtered)
     setUsers(filtered)
+  }
    
   }
   return (
